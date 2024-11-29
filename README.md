@@ -43,7 +43,7 @@ Este repositorio está organizado según los módulos del curso, y cada proyecto
 ## 🚀 Cómo usar este repositorio  
 1. Clona este repositorio:  
    ```bash
-   git clone https://github.com/tu-usuario/api-rest-spring-boot.git
+   git clone https://github.com/Alvaro-Neyra/REPOSITORIO-API_REST.git
    ```
 2. Ve a la carpeta del proyecto deseado.
 3. Sigue las instrucciones específicas en el README de cada módulo o proyecto.
