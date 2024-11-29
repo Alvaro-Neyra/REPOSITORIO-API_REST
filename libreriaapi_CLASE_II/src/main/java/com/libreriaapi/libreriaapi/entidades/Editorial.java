@@ -1,6 +1,7 @@
 package com.libreriaapi.libreriaapi.entidades;
 
-import jakarta.annotation.Generated;
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

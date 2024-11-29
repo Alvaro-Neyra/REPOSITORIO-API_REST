@@ -1,5 +1,7 @@
 package com.libreriaapi.libreriaapi.entidades;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +10,10 @@ import jakarta.persistence.Id;
 @Entity
 public class Autor {
     @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id_autor;
+
     private Boolean autor_activo;
     private String nombre_autor;
 

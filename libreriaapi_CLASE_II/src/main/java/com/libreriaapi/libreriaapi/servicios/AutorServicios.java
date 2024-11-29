@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.repositorios.AutorRepositorio;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class AutorServicios {
     @Autowired
@@ -30,10 +32,12 @@ public class AutorServicios {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Autor> listarAutores() {
         return autorRepositorio.findAll();
     }
 
+    @Transactional
     public void darBajaAutor(String id) throws Exception {
         Optional<Autor> autorOpcional = autorRepositorio.findById(id);
         if (autorOpcional.isPresent()) {
@@ -45,6 +49,7 @@ public class AutorServicios {
         }
     }
 
+    @Transactional
     public void actualizarAutor(String id, String nuevoNombre) throws Exception {
         Optional<Autor> autorOpcional = autorRepositorio.findById(id);
         if (autorOpcional.isPresent()) {

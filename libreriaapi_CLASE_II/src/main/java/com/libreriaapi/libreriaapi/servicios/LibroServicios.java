@@ -4,19 +4,44 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.entidades.Libro;
+import com.libreriaapi.libreriaapi.modelos.LibroCreateDTO;
 import com.libreriaapi.libreriaapi.repositorios.LibroRepositorio;
 
 public class LibroServicios {
     @Autowired
     private LibroRepositorio libroRepositorio;
 
-    public void crearLibro(Long idLibro, String titulo, Integer ejemplares, Autor autor, Editorial editorial) {
-        Libro libro = new Libro(idLibro, ejemplares, true, titulo, autor, editorial);
-        libroRepositorio.save(libro);
+    @Autowired
+    private AutorServicios autorServicios;
+
+    @Autowired
+    private EditorialServicios editorialServicios;
+
+
+    @Transactional
+    public void crearLibro(LibroCreateDTO libroCreateDTO) throws Exception {
+        try {
+            Libro libroNuevo = new Libro();
+            libroNuevo.setId_libro(libroCreateDTO.getIsbn());
+            libroNuevo.setTitulo(libroCreateDTO.getTitulo());
+            libroNuevo.setEjemplares(libroCreateDTO.getEjemplares());
+            Autor autor = autorServicios.obtenerAutorPorId(libroCreateDTO.getIdAutor());
+            if (autor != null) {
+                libroNuevo.setAutor(autor);
+            }
+            Editorial editorial = editorialServicios.obtenerEditorialPorId(libroCreateDTO.getIdEditorial());
+            if (editorial != null) {
+                libroNuevo.setEditorial(editorial);
+            }
+            libroRepositorio.save(libroNuevo);
+        }  catch (Exception e) {
+            throw new Exception("Error al crear un nuevo libro: " + e.getMessage());
+        }
     }
 
     public Libro obtenerLibroPorId(Long id) throws Exception{
