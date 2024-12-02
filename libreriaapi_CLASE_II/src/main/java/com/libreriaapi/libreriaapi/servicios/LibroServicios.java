@@ -42,6 +42,7 @@ public class LibroServicios {
         }
     }
 
+    @Transactional
     public Libro obtenerLibroPorId(Long id) throws Exception{
         Optional<Libro> libro = libroRepositorio.findById(id);
         if (libro.isPresent()) {
@@ -51,10 +52,12 @@ public class LibroServicios {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Libro> listarLibros() {
         return libroRepositorio.findAll();
     }
 
+    @Transactional
     public void darBajaLibro(Long id) throws Exception {
         Optional<Libro> libro = libroRepositorio.findById(id);
         if (libro.isPresent()) {
@@ -66,6 +69,7 @@ public class LibroServicios {
         }
     }
 
+    @Transactional
     public void darBajaLibroPorTitulo(String titulo) throws Exception {
         Libro libro = libroRepositorio.buscarPorTitulo(titulo);
         if (libro != null) {
@@ -76,6 +80,7 @@ public class LibroServicios {
         }
     }
 
+    @Transactional
     public void actualizarLibroParcial(Long idLibro, String titulo, Integer ejemplares, String idAutor, Integer idEditorial) throws Exception{
         try {
             Optional<Libro> libroOptional = libroRepositorio.findById(idLibro);
@@ -106,6 +111,7 @@ public class LibroServicios {
         }
     }
 
+    @Transactional
     public void actualizarLibro(Long idLibro, String titulo, Integer ejemplares, String idAutor, Integer idEditorial) throws Exception {
         try {
             Optional<Libro> libro = libroRepositorio.findById(idLibro);

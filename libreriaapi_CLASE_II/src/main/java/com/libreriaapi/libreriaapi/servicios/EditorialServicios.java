@@ -8,14 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.repositorios.EditorialRepositorio;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class EditorialServicios {
     @Autowired
     private EditorialRepositorio editorialRepositorio;
 
+    @Transactional
     public void crearEditorial(String nombre) {
         Editorial editorial = new Editorial();
         editorial.setNombreEditorial(nombre);
@@ -23,6 +24,7 @@ public class EditorialServicios {
         editorialRepositorio.save(editorial);
     }
 
+    @Transactional
     public Editorial obtenerEditorialPorId(Integer id) throws Exception{
         Optional<Editorial> editorial = editorialRepositorio.findById((id));
         if (editorial.isPresent()) {
@@ -32,16 +34,19 @@ public class EditorialServicios {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<Editorial> listarEditoriales() {
         return editorialRepositorio.findAll();
     }
 
+    @Transactional
     public void darBajaEditorial(Integer id) throws Exception {
         Editorial editorial = obtenerEditorialPorId(id);
         editorial.setEditorialActiva(false);
         editorialRepositorio.save(editorial);
     }
 
+    @Transactional
     public void darBajaEditorialPorNombre(String nombre) throws Exception {
         Editorial editorial = editorialRepositorio.buscarPorNombreEditorial(nombre);
         if (editorial != null) {
@@ -70,6 +75,7 @@ public class EditorialServicios {
         editorialRepositorio.save(editorial.get());
     }
 
+    @Transactional
     public void actualizarEditorial(Integer id, String nuevoNombre, Boolean activo) throws Exception {
         Editorial editorial = obtenerEditorialPorId(id);
         editorial.setNombreEditorial(nuevoNombre);

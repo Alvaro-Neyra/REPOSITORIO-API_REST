@@ -16,6 +16,7 @@ public class AutorServicios {
     @Autowired
     private AutorRepositorio autorRepositorio;
 
+    @Transactional
     public void crearAutor(String nombre) {
         Autor autor = new Autor();
         autor.setNombreAutor(nombre);
@@ -23,6 +24,7 @@ public class AutorServicios {
         autorRepositorio.save(autor);
     }
 
+    @Transactional
     public Autor obtenerAutorPorId(String id) throws Exception{
         Optional<Autor> autorOpcional = autorRepositorio.findById(id);
         if (autorOpcional.isPresent()) {
