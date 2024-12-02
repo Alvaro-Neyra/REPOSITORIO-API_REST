@@ -76,15 +76,51 @@ public class LibroServicios {
         }
     }
 
-    public void actualizarLibro(Long idLibro, String titulo, Integer ejemplares, Autor autor, Editorial editorial) {
-        Optional<Libro> libro = libroRepositorio.findById(idLibro);
-        if (libro.isPresent()) {
-            Libro libroActualizado = libro.get();
-            libroActualizado.setTitulo(titulo);
-            libroActualizado.setEjemplares(ejemplares);
-            libroActualizado.setAutor(autor);
-            libroActualizado.setEditorial(editorial);
-            libroRepositorio.save(libroActualizado);
+    public void actualizarLibroParcial(Long idLibro, String titulo, Integer ejemplares, String idAutor, Integer idEditorial) throws Exception{
+        try {
+            Optional<Libro> libroOptional = libroRepositorio.findById(idLibro);
+            if (libroOptional.isPresent()) {
+                Libro libro = libroOptional.get();
+    
+                if (titulo != null) {
+                    libro.setTitulo(titulo);
+                }
+                if (ejemplares != null) {
+                    libro.setEjemplares(ejemplares);
+                }
+                if (idAutor != null) {
+                    Autor autor = autorServicios.obtenerAutorPorId(idAutor);
+                    libro.setAutor(autor);
+                }
+                if (idEditorial != null) {
+                    Editorial editorial = editorialServicios.obtenerEditorialPorId(idEditorial);
+                    libro.setEditorial(editorial);
+                }
+    
+                libroRepositorio.save(libro);
+            } else {
+                throw new Exception("Libro no encontrado");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al actualizar parcialmente el libro: " + e.getMessage());
+        }
+    }
+
+    public void actualizarLibro(Long idLibro, String titulo, Integer ejemplares, String idAutor, Integer idEditorial) throws Exception {
+        try {
+            Optional<Libro> libro = libroRepositorio.findById(idLibro);
+            if (libro.isPresent()) {
+                Libro libroActualizado = libro.get();
+                libroActualizado.setTitulo(titulo);
+                libroActualizado.setEjemplares(ejemplares);
+                Autor autor = autorServicios.obtenerAutorPorId(idAutor);
+                libroActualizado.setAutor(autor);
+                Editorial editorial = editorialServicios.obtenerEditorialPorId(idEditorial);
+                libroActualizado.setEditorial(editorial);
+                libroRepositorio.save(libroActualizado);
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al actualizar el libro: " + e.getMessage());
         }
     }
 }

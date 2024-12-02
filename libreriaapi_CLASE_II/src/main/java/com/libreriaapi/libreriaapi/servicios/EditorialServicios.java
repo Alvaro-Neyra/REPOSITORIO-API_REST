@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.repositorios.EditorialRepositorio;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class EditorialServicios {
     @Autowired
@@ -50,9 +52,28 @@ public class EditorialServicios {
         }
     }
 
-    public void actualizarEditorial(Integer id, String nuevoNombre) throws Exception {
+    @Transactional
+    public void actualizarEditorialParcial(Integer id, String nuevoNombre, Boolean activa) throws Exception {
+        Optional<Editorial> editorial = editorialRepositorio.findById(id);
+
+        if (!editorial.isPresent()) {
+            throw new Exception("No se encontro la editorial");
+        }
+
+        if (nuevoNombre != null) {
+            editorial.get().setNombreEditorial(nuevoNombre);
+        }
+        if (activa != null) {
+            editorial.get().setEditorialActiva(activa);
+        }
+
+        editorialRepositorio.save(editorial.get());
+    }
+
+    public void actualizarEditorial(Integer id, String nuevoNombre, Boolean activo) throws Exception {
         Editorial editorial = obtenerEditorialPorId(id);
         editorial.setNombreEditorial(nuevoNombre);
+        editorial.setEditorialActiva(activo);
         editorialRepositorio.save(editorial);
     }
 }

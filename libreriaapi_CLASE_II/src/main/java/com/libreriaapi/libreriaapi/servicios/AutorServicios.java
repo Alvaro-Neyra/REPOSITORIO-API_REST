@@ -58,14 +58,34 @@ public class AutorServicios {
         } else {
             throw new Exception("No se encontro el autor");
         }
+        }
+
+    @Transactional
+    public void actualizarAutorParcial(String id, String nuevoNombre, Boolean activo) throws Exception {
+        Optional<Autor> autorOpcional = autorRepositorio.findById(id);
+        if (autorOpcional.isPresent()) {
+            Autor autor = autorOpcional.get();
+
+            if (nuevoNombre != null) {
+                autor.setNombreAutor(nuevoNombre);
+            }
+            if (activo != null) {
+                autor.setAutorActivo(activo);
+            }
+
+            autorRepositorio.save(autor);
+        } else {
+            throw new Exception("No se encontró el autor con ID: " + id);
+        }
     }
 
     @Transactional
-    public void actualizarAutor(String id, String nuevoNombre) throws Exception {
+    public void actualizarAutor(String id, String nuevoNombre, Boolean activo) throws Exception {
         Optional<Autor> autorOpcional = autorRepositorio.findById(id);
         if (autorOpcional.isPresent()) {
             Autor autor = autorOpcional.get();
             autor.setNombreAutor(nuevoNombre);
+            autor.setAutorActivo(activo);
             autorRepositorio.save(autor);
         } else {
             throw new Exception("No se encontro el autor");

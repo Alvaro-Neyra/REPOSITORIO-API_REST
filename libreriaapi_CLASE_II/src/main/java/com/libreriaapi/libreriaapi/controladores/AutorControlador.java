@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,10 +58,24 @@ public class AutorControlador {
         }
     }
     
-    @PatchMapping("modificar")
-    public ResponseEntity<Object> modificarAutor(@RequestParam String id, @RequestParam String nombre) {
+    @PatchMapping("modificarParcial")
+    public ResponseEntity<Object> modificarAutorParcial(
+            @RequestParam String id,
+            @RequestParam(required = false) String nuevoNombre,
+            @RequestParam(required = false) Boolean activo) {
         try {
-            autorServicios.actualizarAutor(id, nombre);
+            autorServicios.actualizarAutorParcial(id, nuevoNombre, activo);
+            return ResponseEntity.ok("Autor modificado parcialmente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el autor: " + e.getMessage());
+        }
+    }
+
+
+    @PutMapping("modificar")
+    public ResponseEntity<Object> modificarAutor(@RequestParam String id, @RequestParam String nombre, @RequestParam Boolean activo) {
+        try {
+            autorServicios.actualizarAutor(id, nombre, activo);
             return ResponseEntity.ok(autorServicios.obtenerAutorPorId(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

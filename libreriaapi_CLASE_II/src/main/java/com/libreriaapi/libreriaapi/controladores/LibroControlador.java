@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,8 +61,8 @@ public class LibroControlador {
         }
     }
 
-    @PatchMapping("modificar")
-    public ResponseEntity<Object> modificarLibro(@RequestParam Long id, @RequestParam String titulo, @RequestParam Integer ejemplares, @RequestParam Autor idAutor, @RequestParam Editorial idEditorial) {
+    @PutMapping("modificar")
+    public ResponseEntity<Object> modificarLibro(@RequestParam Long id, @RequestParam String titulo, @RequestParam Integer ejemplares, @RequestParam String idAutor, @RequestParam Integer idEditorial) {
         try {
             libroServicios.actualizarLibro(id, titulo, ejemplares, idAutor, idEditorial);
             return ResponseEntity.ok("Libro modificado correctamente");
@@ -69,4 +70,19 @@ public class LibroControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PatchMapping("modificarParcial")
+    public ResponseEntity<Object> modificarLibroParcial(
+        @RequestParam Long id,
+        @RequestParam(required = false) String titulo,
+        @RequestParam(required = false) Integer ejemplares,
+        @RequestParam(required = false) String idAutor,
+        @RequestParam(required = false) Integer idEditorial) {
+    try {
+        libroServicios.actualizarLibroParcial(id, titulo, ejemplares, idAutor, idEditorial);
+        return ResponseEntity.ok("Libro modificado parcialmente");
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el libro parcialmente: " + e.getMessage());
+    }
+}
 }

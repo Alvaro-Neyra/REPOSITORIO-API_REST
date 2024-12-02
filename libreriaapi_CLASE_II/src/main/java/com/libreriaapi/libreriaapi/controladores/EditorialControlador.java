@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,10 +61,23 @@ public class EditorialControlador {
         }
     }
 
-    @PatchMapping("modificar")
-    public ResponseEntity<Object> modificarEditorial(@RequestParam Integer id, @RequestParam String nombre) {
+    @PatchMapping("modificarParcial")
+    public ResponseEntity<Object> modificarEditorialParcial(
+            @RequestParam Integer id,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) Boolean activo) {
         try {
-            editorialServicios.actualizarEditorial(id, nombre);
+            editorialServicios.actualizarEditorialParcial(id, nombre, activo);
+            return ResponseEntity.ok("Editorial modificada parcialmente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar la editorial: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("modificar")
+    public ResponseEntity<Object> modificarEditorial(@RequestParam Integer id, @RequestParam String nombre, @RequestParam Boolean activo) {
+        try {
+            editorialServicios.actualizarEditorial(id, nombre, activo);
             return ResponseEntity.ok("Editorial modificada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
