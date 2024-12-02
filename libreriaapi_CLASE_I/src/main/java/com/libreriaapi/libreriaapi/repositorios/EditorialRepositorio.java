@@ -9,8 +9,8 @@ import com.libreriaapi.libreriaapi.entidades.Editorial;
 
 @Repository
 public interface EditorialRepositorio extends JpaRepository<Editorial, Integer> {
-    @Query("SELECT e FROM Editorial e WHERE e.nombre_editorial = :nombre")
+    @Query("SELECT e FROM Editorial e WHERE e.nombreEditorial = :nombre")
     Editorial buscarPorNombreEditorial(@Param("nombre") String nombre);
-    @Query("SELECT e FROM Editorial e WHERE e.id_editorial = :id")
+    @Query("SELECT e FROM Editorial e WHERE e.idEditorial = :id")
     Editorial buscarPorIdEditorial(@Param("id") Integer id);
 }

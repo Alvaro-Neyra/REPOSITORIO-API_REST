@@ -18,8 +18,8 @@ public class LibroControlador {
     public ResponseEntity<Object> crearLibro(@RequestParam Long idLibro,
                                             @RequestParam String titulo,    
                                             @RequestParam Integer ejemplares,
-                                            @RequestParam Autor idAutor,
-                                            @RequestParam Editorial idEditorial) {
+                                            @RequestParam String idAutor,
+                                            @RequestParam Integer idEditorial) {
         try {
             libroServicios.crearLibro(idLibro, titulo, ejemplares, idAutor, idEditorial);
             return new ResponseEntity<>("Libro creado correctamente: ", HttpStatus.OK);
