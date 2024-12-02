@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.entidades.Libro;
-import com.libreriaapi.libreriaapi.modelos.LibroCreateDTO;
 import com.libreriaapi.libreriaapi.repositorios.LibroRepositorio;
 
+@Service
 public class LibroServicios {
     @Autowired
     private LibroRepositorio libroRepositorio;
@@ -24,22 +25,19 @@ public class LibroServicios {
 
 
     @Transactional
-    public void crearLibro(LibroCreateDTO libroCreateDTO) throws Exception {
+    public void crearLibro(Long idLibro, String titulo, Integer ejemplares, String idAutor, Integer idEditorial) throws Exception {
         try {
             Libro libroNuevo = new Libro();
-            libroNuevo.setId_libro(libroCreateDTO.getIsbn());
-            libroNuevo.setTitulo(libroCreateDTO.getTitulo());
-            libroNuevo.setEjemplares(libroCreateDTO.getEjemplares());
-            Autor autor = autorServicios.obtenerAutorPorId(libroCreateDTO.getIdAutor());
-            if (autor != null) {
-                libroNuevo.setAutor(autor);
-            }
-            Editorial editorial = editorialServicios.obtenerEditorialPorId(libroCreateDTO.getIdEditorial());
-            if (editorial != null) {
-                libroNuevo.setEditorial(editorial);
-            }
+            libroNuevo.setIdLibro(idLibro);
+            libroNuevo.setTitulo(titulo);
+            libroNuevo.setEjemplares(ejemplares);
+            Autor autor = autorServicios.obtenerAutorPorId(idAutor);
+            libroNuevo.setAutor(autor);
+            Editorial editorial = editorialServicios.obtenerEditorialPorId(idEditorial);
+            libroNuevo.setEditorial(editorial);
+            libroNuevo.setLibroActivo(true);
             libroRepositorio.save(libroNuevo);
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new Exception("Error al crear un nuevo libro: " + e.getMessage());
         }
     }
@@ -53,7 +51,7 @@ public class LibroServicios {
         }
     }
 
-    List<Libro> listarLibros() {
+    public List<Libro> listarLibros() {
         return libroRepositorio.findAll();
     }
 
@@ -61,8 +59,18 @@ public class LibroServicios {
         Optional<Libro> libro = libroRepositorio.findById(id);
         if (libro.isPresent()) {
             Libro libroBaja = libro.get();
-            libroBaja.setLibro_activo(false);
+            libroBaja.setLibroActivo(false);
             libroRepositorio.save(libroBaja);
+        } else {
+            throw new Exception("No se encontro el libro");
+        }
+    }
+
+    public void darBajaLibroPorTitulo(String titulo) throws Exception {
+        Libro libro = libroRepositorio.buscarPorTitulo(titulo);
+        if (libro != null) {
+            libro.setLibroActivo(false);
+            libroRepositorio.save(libro);
         } else {
             throw new Exception("No se encontro el libro");
         }

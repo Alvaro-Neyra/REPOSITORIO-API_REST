@@ -18,8 +18,8 @@ public class AutorServicios {
 
     public void crearAutor(String nombre) {
         Autor autor = new Autor();
-        autor.setNombre_autor(nombre);
-        autor.setAutor_activo(true);
+        autor.setNombreAutor(nombre);
+        autor.setAutorActivo(true);
         autorRepositorio.save(autor);
     }
 
@@ -42,7 +42,18 @@ public class AutorServicios {
         Optional<Autor> autorOpcional = autorRepositorio.findById(id);
         if (autorOpcional.isPresent()) {
             Autor autor = autorOpcional.get();
-            autor.setAutor_activo(false);
+            autor.setAutorActivo(false);
+            autorRepositorio.save(autor);
+        } else {
+            throw new Exception("No se encontro el autor");
+        }
+    }
+
+    @Transactional
+    public void darBajaAutorPorNombre(String nombre) throws Exception {
+        Autor autor = autorRepositorio.buscarPorNombreAutor(nombre);
+        if (autor != null) {
+            autor.setAutorActivo(false);
             autorRepositorio.save(autor);
         } else {
             throw new Exception("No se encontro el autor");
@@ -54,7 +65,7 @@ public class AutorServicios {
         Optional<Autor> autorOpcional = autorRepositorio.findById(id);
         if (autorOpcional.isPresent()) {
             Autor autor = autorOpcional.get();
-            autor.setNombre_autor(nuevoNombre);
+            autor.setNombreAutor(nuevoNombre);
             autorRepositorio.save(autor);
         } else {
             throw new Exception("No se encontro el autor");

@@ -16,8 +16,8 @@ public class EditorialServicios {
 
     public void crearEditorial(String nombre) {
         Editorial editorial = new Editorial();
-        editorial.setNombre_editorial(nombre);
-        editorial.setEditorial_activa(true);
+        editorial.setNombreEditorial(nombre);
+        editorial.setEditorialActiva(true);
         editorialRepositorio.save(editorial);
     }
 
@@ -36,13 +36,23 @@ public class EditorialServicios {
 
     public void darBajaEditorial(Integer id) throws Exception {
         Editorial editorial = obtenerEditorialPorId(id);
-        editorial.setEditorial_activa(false);
+        editorial.setEditorialActiva(false);
         editorialRepositorio.save(editorial);
+    }
+
+    public void darBajaEditorialPorNombre(String nombre) throws Exception {
+        Editorial editorial = editorialRepositorio.buscarPorNombreEditorial(nombre);
+        if (editorial != null) {
+            editorial.setEditorialActiva(false);
+            editorialRepositorio.save(editorial);
+        } else {
+            throw new Exception("No se encontro la editorial");
+        }
     }
 
     public void actualizarEditorial(Integer id, String nuevoNombre) throws Exception {
         Editorial editorial = obtenerEditorialPorId(id);
-        editorial.setNombre_editorial(nuevoNombre);
+        editorial.setNombreEditorial(nuevoNombre);
         editorialRepositorio.save(editorial);
     }
 }

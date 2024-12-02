@@ -5,41 +5,36 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 public class Libro {
     @Id
-    @Column(name = "id_libro")
-    private Long id_libro;
+    @Column(nullable = false, unique = true)
+    private Long idLibro;
 
-    @Column(name = "ejemplares")
     private Integer ejemplares;
 
-    @Column(name = "libro_activo")
-    private Boolean libro_activo;
+    private Boolean libroActivo;
 
-    @Column(name = "titulo")
     private String titulo;
 
     @ManyToOne
-    @JoinColumn(name = "id_autor")
+    @JoinColumn(name = "idAutor", nullable = false)
     private Autor autor;
 
     @ManyToOne
-    @JoinColumn(name = "id_editorial")
+    @JoinColumn(name = "idEditorial", nullable = false)
     private Editorial editorial;
 
-    public Libro(Long id_libro, Integer ejemplares, Boolean libro_activo, String titulo, Autor autor,
+    public Libro(Long idLibro, Integer ejemplares, Boolean libroActivo, String titulo, Autor autor,
             Editorial editorial) {
-        this.id_libro = id_libro;
+        this.idLibro = idLibro;
         this.ejemplares = ejemplares;
-        this.libro_activo = libro_activo;
+        this.libroActivo = libroActivo;
         this.titulo = titulo;
         this.autor = autor;
         this.editorial = editorial;

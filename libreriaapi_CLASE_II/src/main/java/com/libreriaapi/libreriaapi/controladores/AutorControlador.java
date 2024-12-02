@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.PatchExchange;
 
 import com.libreriaapi.libreriaapi.servicios.AutorServicios;
 
@@ -20,12 +19,12 @@ public class AutorControlador {
     private AutorServicios autorServicios;
 
     @PostMapping("crear")
-    public ResponseEntity<Object> crearAutor(@RequestParam String nombre) {
+    public ResponseEntity<Object> crearAutor(String nombre) {
         try {
             autorServicios.crearAutor(nombre);
-            return new ResponseEntity<>("Autor creado correctamente: " + nombre, HttpStatus.OK);
+            return new ResponseEntity<>("Autor creado correctamente: ", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error al crear un nuevo Autor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error al crear un nuevo Autor: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -38,6 +37,26 @@ public class AutorControlador {
         }
     }
 
+    @PostMapping("darBaja")
+    public ResponseEntity<Object> darBajaAutor(@RequestParam String id) {
+        try {
+            autorServicios.darBajaAutor(id);
+            return ResponseEntity.ok("Autor dado de baja correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("darBajaPorNombre")
+    public ResponseEntity<Object> darBajaAutorPorTitulo(@RequestParam String nombre) {
+        try {
+            autorServicios.darBajaAutorPorNombre(nombre);
+            return ResponseEntity.ok("Autor dado de baja correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
     @PatchMapping("modificar")
     public ResponseEntity<Object> modificarAutor(@RequestParam String id, @RequestParam String nombre) {
         try {
