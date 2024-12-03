@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.libreriaapi.libreriaapi.modelos.libro.LibroCreateDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroPatchDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroUpdateDTO;
 import com.libreriaapi.libreriaapi.servicios.LibroServicios;
 
 
@@ -32,7 +35,7 @@ public class LibroControlador {
         }
     }
 
-    @PostMapping("/crearConDTO")
+    @PostMapping("crearDTO")
     public ResponseEntity<Object> crearLibro(@RequestBody LibroCreateDTO libroDTO) {
         try {
             libroServicios.crearLibro(libroDTO);
@@ -47,6 +50,15 @@ public class LibroControlador {
     public ResponseEntity<Object> listarLibros() {
         try {
             return ResponseEntity.ok(libroServicios.listarLibros());
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al listar los libros: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("listarDTO")
+    public ResponseEntity<Object> listarLibrosDTO() {
+        try {
+            return ResponseEntity.ok(libroServicios.listarLibrosDTO());
         } catch (Exception e) {
             return new ResponseEntity<>("Error al listar los libros: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -71,6 +83,16 @@ public class LibroControlador {
         }
     }
 
+    @PostMapping("darBajaDTO")
+    public ResponseEntity<Object> darBajaLibro(@RequestBody LibroDarBajaDTO libroDTO) {
+        try {
+            libroServicios.darBajaLibro(libroDTO);
+            return ResponseEntity.ok("Libro dado de baja correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PostMapping("darBajaPorTitulo")
     public ResponseEntity<Object> darBajaLibroPorTitulo(@RequestParam String titulo) {
         try {
@@ -78,6 +100,41 @@ public class LibroControlador {
             return ResponseEntity.ok("Libro dado de baja correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("darBajaPorTituloDTO")
+    public ResponseEntity<Object> darBajaLibroPorTitulo(@RequestBody LibroDarBajaDTO libroDTO) {
+        try {
+            libroServicios.darBajaLibroPorTitulo(libroDTO);
+            return ResponseEntity.ok("Libro dado de baja correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PatchMapping("modificarParcial")
+    public ResponseEntity<Object> modificarLibroParcial(
+        @RequestParam Long id,
+        @RequestParam(required = false) String titulo,
+        @RequestParam(required = false) Integer ejemplares,
+        @RequestParam(required = false) String idAutor,
+        @RequestParam(required = false) Integer idEditorial) {
+        try {
+            libroServicios.actualizarLibroParcial(id, titulo, ejemplares, idAutor, idEditorial);
+            return ResponseEntity.ok("Libro modificado parcialmente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el libro parcialmente: " + e.getMessage());
+        }
+    }
+
+    @PatchMapping("modificarParcialDTO")
+    public ResponseEntity<Object> modificarLibroParcial(@RequestBody LibroPatchDTO libroDTO) {
+        try {
+            libroServicios.actualizarLibroParcial(libroDTO);
+            return ResponseEntity.ok("Libro modificado parcialmente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el libro parcialmente: " + e.getMessage());
         }
     }
 
@@ -91,18 +148,13 @@ public class LibroControlador {
         }
     }
 
-    @PatchMapping("modificarParcial")
-    public ResponseEntity<Object> modificarLibroParcial(
-        @RequestParam Long id,
-        @RequestParam(required = false) String titulo,
-        @RequestParam(required = false) Integer ejemplares,
-        @RequestParam(required = false) String idAutor,
-        @RequestParam(required = false) Integer idEditorial) {
-    try {
-        libroServicios.actualizarLibroParcial(id, titulo, ejemplares, idAutor, idEditorial);
-        return ResponseEntity.ok("Libro modificado parcialmente");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el libro parcialmente: " + e.getMessage());
+    @PutMapping("modificarDTO")
+    public ResponseEntity<Object> modificarLibro(@RequestBody LibroUpdateDTO libroDTO) {
+        try {
+            libroServicios.actualizarLibro(libroDTO);
+            return ResponseEntity.ok("Libro modificado correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-}
 }

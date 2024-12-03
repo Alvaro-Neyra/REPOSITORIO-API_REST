@@ -3,14 +3,13 @@ package com.libreriaapi.libreriaapi.modelos.editorial;
 import lombok.Data;
 
 @Data
-public class EditorialListDTO {
+public class EditorialDarBajaDTO {
     private Integer idEditorial;
     private String nombreEditorial;
     private Boolean editorialActiva;
 
-    public EditorialListDTO(Integer idEditorial, String nombreEditorial, Boolean editorialActiva) {
+    public EditorialDarBajaDTO(Integer idEditorial, String nombreEditorial) {
         this.idEditorial = idEditorial;
         this.nombreEditorial = nombreEditorial;
-        this.editorialActiva = editorialActiva;
     }
 }

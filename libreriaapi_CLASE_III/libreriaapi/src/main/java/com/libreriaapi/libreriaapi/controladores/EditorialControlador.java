@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialCreateDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialPatchDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialUpdateDTO;
 import com.libreriaapi.libreriaapi.servicios.EditorialServicios;
 
 
@@ -34,7 +37,7 @@ public class EditorialControlador {
         }
     }
 
-    @PostMapping("crearConDTO")
+    @PostMapping("crearDTO")
     public ResponseEntity<Object> crearEditorial(@RequestBody EditorialCreateDTO editorialDTO) {
         try {
             editorialServicios.crearEditorial(editorialDTO);
@@ -53,6 +56,24 @@ public class EditorialControlador {
         }
     }
 
+    @GetMapping("listarDTO")
+    public ResponseEntity<Object> listarEditorialesDTO() {
+        try {
+            return ResponseEntity.ok(editorialServicios.listarEditorialesDTO());
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al listar las editoriales: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("listarActivos")
+    public ResponseEntity<Object> listarEditorialesActivos() {
+        try {
+            return ResponseEntity.ok(editorialServicios.listarEditorialesActivos());
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al listar las editoriales activas: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("darBaja")
     public ResponseEntity<Object> darBajaEditorial(@RequestParam Integer id) {
         try {
@@ -63,10 +84,30 @@ public class EditorialControlador {
         }
     }
 
+    @PostMapping("darBajaDTO")
+    public ResponseEntity<Object> darBajaEditorial(@RequestBody EditorialDarBajaDTO editorialDTO) {
+        try {
+            editorialServicios.darBajaEditorial(editorialDTO);
+            return ResponseEntity.ok("Editorial dada de baja correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PostMapping("darBajaPorNombre")
     public ResponseEntity<Object> darBajaEditorialPorNombre(@RequestParam String nombre) {
         try {
             editorialServicios.darBajaEditorialPorNombre(nombre);
+            return ResponseEntity.ok("Editorial dada de baja correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("darBajaPorNombreDTO")
+    public ResponseEntity<Object> darBajaEditorialPorNombre(@RequestBody EditorialDarBajaDTO editorialDTO) {
+        try {
+            editorialServicios.darBajaEditorialPorNombre(editorialDTO);
             return ResponseEntity.ok("Editorial dada de baja correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -86,10 +127,30 @@ public class EditorialControlador {
         }
     }
 
+    @PatchMapping("modificarDTOParcial")
+    public ResponseEntity<Object> modificarEditorial(@RequestBody EditorialPatchDTO editorialDTO) {
+        try {
+            editorialServicios.actualizarEditorialParcial(editorialDTO);
+            return ResponseEntity.ok("Editorial modificada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PutMapping("modificar")
     public ResponseEntity<Object> modificarEditorial(@RequestParam Integer id, @RequestParam String nombre, @RequestParam Boolean activo) {
         try {
             editorialServicios.actualizarEditorial(id, nombre, activo);
+            return ResponseEntity.ok("Editorial modificada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("modificarDTO")
+    public ResponseEntity<Object> modificarEditorial(@RequestBody EditorialUpdateDTO editorialDTO) {
+        try {
+            editorialServicios.actualizarEditorial(editorialDTO);
             return ResponseEntity.ok("Editorial modificada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroListActivosDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroListDTO;
 import com.libreriaapi.libreriaapi.entidades.Libro;
 
 @Repository
@@ -17,4 +18,7 @@ public interface LibroRepositorio extends JpaRepository<Libro, Long> {
     @Query("SELECT new com.libreriaapi.libreriaapi.modelos.libro.LibroListActivosDTO(l.titulo, l.ejemplares) " +
             "FROM Libro l WHERE l.libroActivo = true")
     List<LibroListActivosDTO> listarActivos();
+    @Query("SELECT new com.libreriaapi.libreriaapi.modelos.libro.LibroListDTO(l.idLibro, l.titulo, l.ejemplares, l.autor.idAutor, l.editorial.idEditorial, l.libroActivo) " +
+            "FROM Libro l")
+    List<LibroListDTO> listar();
 }

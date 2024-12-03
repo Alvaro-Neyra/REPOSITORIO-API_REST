@@ -3,7 +3,7 @@ package com.libreriaapi.libreriaapi.modelos.libro;
 import lombok.Data;
 
 @Data
-public class LibroPatchDTO {
+public class LibroDarBajaDTO {
     private Long isbn;
     private String titulo;
     private Integer ejemplares;
@@ -11,7 +11,7 @@ public class LibroPatchDTO {
     private Integer idEditorial;
     private Boolean libroActivo;
 
-    public LibroPatchDTO(Long isbn, String titulo, Integer ejemplares, String idAutor, Integer idEditorial, Boolean libroActivo) {
+    public LibroDarBajaDTO(Long isbn, String titulo, Integer ejemplares, String idAutor, Integer idEditorial, Boolean libroActivo) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.ejemplares = ejemplares;

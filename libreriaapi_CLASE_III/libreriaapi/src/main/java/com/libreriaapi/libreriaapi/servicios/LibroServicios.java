@@ -11,7 +11,11 @@ import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.entidades.Libro;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroCreateDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroDarBajaDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroListActivosDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroListDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroPatchDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroUpdateDTO;
 import com.libreriaapi.libreriaapi.repositorios.LibroRepositorio;
 
 @Service
@@ -78,6 +82,11 @@ public class LibroServicios {
     }
 
     @Transactional(readOnly = true)
+    public List<LibroListDTO> listarLibrosDTO() {
+        return libroRepositorio.listar();
+    }
+
+    @Transactional(readOnly = true)
     public List<LibroListActivosDTO> listarLibrosActivos() {
         return libroRepositorio.listarActivos();
     }
@@ -95,8 +104,31 @@ public class LibroServicios {
     }
 
     @Transactional
+    public void darBajaLibro(LibroDarBajaDTO libroDTO) throws Exception {
+        Optional<Libro> libro = libroRepositorio.findById(libroDTO.getIsbn());
+        if (libro.isPresent()) {
+            Libro libroBaja = libro.get();
+            libroBaja.setLibroActivo(false);
+            libroRepositorio.save(libroBaja);
+        } else {
+            throw new Exception("No se encontro el libro");
+        }
+    }
+
+    @Transactional
     public void darBajaLibroPorTitulo(String titulo) throws Exception {
         Libro libro = libroRepositorio.buscarPorTitulo(titulo);
+        if (libro != null) {
+            libro.setLibroActivo(false);
+            libroRepositorio.save(libro);
+        } else {
+            throw new Exception("No se encontro el libro");
+        }
+    }
+
+    @Transactional
+    public void darBajaLibroPorTitulo(LibroDarBajaDTO libroDTO) throws Exception {
+        Libro libro = libroRepositorio.buscarPorTitulo(libroDTO.getTitulo());
         if (libro != null) {
             libro.setLibroActivo(false);
             libroRepositorio.save(libro);
@@ -137,6 +169,37 @@ public class LibroServicios {
     }
 
     @Transactional
+    public void actualizarLibroParcial(LibroPatchDTO libroDTO) throws Exception {
+        try {
+            Optional<Libro> libroOptional = libroRepositorio.findById(libroDTO.getIsbn());
+            if (libroOptional.isPresent()) {
+                Libro libro = libroOptional.get();
+    
+                if (libroDTO.getTitulo() != null) {
+                    libro.setTitulo(libroDTO.getTitulo());
+                }
+                if (libroDTO.getEjemplares() != null) {
+                    libro.setEjemplares(libroDTO.getEjemplares());
+                }
+                if (libroDTO.getIdAutor() != null) {
+                    Autor autor = autorServicios.getOne(libroDTO.getIdAutor());
+                    libro.setAutor(autor);
+                }
+                if (libroDTO.getIdEditorial() != null) {
+                    Editorial editorial = editorialServicios.getOne(libroDTO.getIdEditorial());
+                    libro.setEditorial(editorial);
+                }
+    
+                libroRepositorio.save(libro);
+            } else {
+                throw new Exception("Libro no encontrado");
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al actualizar parcialmente el libro: " + e.getMessage());
+        }
+    }
+
+    @Transactional
     public void actualizarLibro(Long idLibro, String titulo, Integer ejemplares, String idAutor, Integer idEditorial) throws Exception {
         try {
             Optional<Libro> libro = libroRepositorio.findById(idLibro);
@@ -147,6 +210,25 @@ public class LibroServicios {
                 Autor autor = autorServicios.obtenerAutorPorId(idAutor);
                 libroActualizado.setAutor(autor);
                 Editorial editorial = editorialServicios.obtenerEditorialPorId(idEditorial);
+                libroActualizado.setEditorial(editorial);
+                libroRepositorio.save(libroActualizado);
+            }
+        } catch (Exception e) {
+            throw new Exception("Error al actualizar el libro: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void actualizarLibro(LibroUpdateDTO libroDTO) throws Exception {
+        try {
+            Optional<Libro> libro = libroRepositorio.findById(libroDTO.getIsbn());
+            if (libro.isPresent()) {
+                Libro libroActualizado = libro.get();
+                libroActualizado.setTitulo(libroDTO.getTitulo());
+                libroActualizado.setEjemplares(libroDTO.getEjemplares());
+                Autor autor = autorServicios.getOne(libroDTO.getIdAutor());
+                libroActualizado.setAutor(autor);
+                Editorial editorial = editorialServicios.getOne(libroDTO.getIdEditorial());
                 libroActualizado.setEditorial(editorial);
                 libroRepositorio.save(libroActualizado);
             }

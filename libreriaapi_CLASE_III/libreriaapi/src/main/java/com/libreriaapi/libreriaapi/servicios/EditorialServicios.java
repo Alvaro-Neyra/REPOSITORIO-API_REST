@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialCreateDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialListActivosDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialListDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialPatchDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialUpdateDTO;
 import com.libreriaapi.libreriaapi.repositorios.EditorialRepositorio;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +46,21 @@ public class EditorialServicios {
         } else {
             throw new Exception("No se encontro la editorial");
         }
-    }
+    }    
 
     @Transactional(readOnly = true)
     public List<Editorial> listarEditoriales() {
         return editorialRepositorio.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EditorialListDTO> listarEditorialesDTO() {
+        return editorialRepositorio.listar();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EditorialListActivosDTO> listarEditorialesActivos() {
+        return editorialRepositorio.listarActivos();
     }
 
     @Transactional(readOnly = true)
@@ -61,8 +76,26 @@ public class EditorialServicios {
     }
 
     @Transactional
+    public void darBajaEditorial(EditorialDarBajaDTO editorialDTO) throws Exception {
+        Editorial editorial = obtenerEditorialPorId(editorialDTO.getIdEditorial());
+        editorial.setEditorialActiva(false);
+        editorialRepositorio.save(editorial);
+    }
+
+    @Transactional
     public void darBajaEditorialPorNombre(String nombre) throws Exception {
         Editorial editorial = editorialRepositorio.buscarPorNombreEditorial(nombre);
+        if (editorial != null) {
+            editorial.setEditorialActiva(false);
+            editorialRepositorio.save(editorial);
+        } else {
+            throw new Exception("No se encontro la editorial");
+        }
+    }
+
+    @Transactional
+    public void darBajaEditorialPorNombre(EditorialDarBajaDTO editorialDTO) throws Exception {
+        Editorial editorial = editorialRepositorio.buscarPorNombreEditorial(editorialDTO.getNombreEditorial());
         if (editorial != null) {
             editorial.setEditorialActiva(false);
             editorialRepositorio.save(editorial);
@@ -89,11 +122,39 @@ public class EditorialServicios {
         editorialRepositorio.save(editorial.get());
     }
 
+    
+    @Transactional
+    public void actualizarEditorialParcial(EditorialPatchDTO editorialDTO) throws Exception {
+        Optional<Editorial> optionalEditorial = editorialRepositorio.findById(editorialDTO.getIdEditorial());
+        if (!optionalEditorial.isPresent()) {
+            throw new Exception("No se encontró la editorial con el ID proporcionado.");
+        }
+    
+        Editorial editorial = optionalEditorial.get();
+    
+        if (editorialDTO.getNombreEditorial() != null) {
+            editorial.setNombreEditorial(editorialDTO.getNombreEditorial());
+        }
+        if (editorialDTO.getEditorialActiva() != null) {
+            editorial.setEditorialActiva(editorialDTO.getEditorialActiva());
+        }
+    
+        editorialRepositorio.save(editorial);
+    }
+
     @Transactional
     public void actualizarEditorial(Integer id, String nuevoNombre, Boolean activo) throws Exception {
         Editorial editorial = obtenerEditorialPorId(id);
         editorial.setNombreEditorial(nuevoNombre);
         editorial.setEditorialActiva(activo);
+        editorialRepositorio.save(editorial);
+    }
+
+    @Transactional
+    public void actualizarEditorial(EditorialUpdateDTO editorialDTO) throws Exception {
+        Editorial editorial = obtenerEditorialPorId(editorialDTO.getIdEditorial());
+        editorial.setNombreEditorial(editorialDTO.getNombreEditorial());
+        editorial.setEditorialActiva(editorialDTO.getEditorialActiva());
         editorialRepositorio.save(editorial);
     }
 }
