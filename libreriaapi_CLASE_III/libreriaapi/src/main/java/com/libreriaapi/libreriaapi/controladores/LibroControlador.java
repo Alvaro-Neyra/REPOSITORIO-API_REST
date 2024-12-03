@@ -3,6 +3,7 @@ package com.libreriaapi.libreriaapi.controladores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.libreriaapi.libreriaapi.modelos.libro.LibroCreateDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroDeleteDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroPatchDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroUpdateDTO;
 import com.libreriaapi.libreriaapi.servicios.LibroServicios;
@@ -70,6 +72,24 @@ public class LibroControlador {
             return ResponseEntity.ok(libroServicios.listarLibrosActivos());
         } catch (Exception e) {
             return new ResponseEntity<>("Error al listar los libros activos: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("listarPorAutor")
+    public ResponseEntity<Object> listarLibrosPorAutor(@RequestParam String idAutor) {
+        try {
+            return ResponseEntity.ok(libroServicios.listarLibrosPorAutor(idAutor));
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al listar los libros por autor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("listarPorEditorial")
+    public ResponseEntity<Object> listarLibrosPorEditorial(@RequestParam Integer idEditorial) {
+        try {
+            return ResponseEntity.ok(libroServicios.listarLibrosPorEditorial(idEditorial));
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al listar los libros por editorial: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -153,6 +173,26 @@ public class LibroControlador {
         try {
             libroServicios.actualizarLibro(libroDTO);
             return ResponseEntity.ok("Libro modificado correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("eliminar")
+    public ResponseEntity<Object> eliminarLibro(@RequestParam Long id) {
+        try {
+            libroServicios.eliminarLibro(id);
+            return ResponseEntity.ok("Libro eliminado correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("eliminarDTO")
+    public ResponseEntity<Object> eliminarLibro(@RequestBody LibroDeleteDTO libroDTO) {
+        try {
+            libroServicios.eliminarLibro(libroDTO);
+            return ResponseEntity.ok("Libro eliminado correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorCreateDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.autor.AutorDeleteDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorListActivosDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorListDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorPatchDTO;
@@ -176,5 +177,15 @@ public class AutorServicios {
         } else {
             throw new Exception("No se encontro el autor");
         }
+    }
+
+    @Transactional
+    public void eliminarAutor(String id) {
+        autorRepositorio.deleteById(id);
+    }
+
+    @Transactional
+    public void eliminarAutor(AutorDeleteDTO autorDTO) {
+        autorRepositorio.deleteById(autorDTO.getIdAutor());
     }
 }

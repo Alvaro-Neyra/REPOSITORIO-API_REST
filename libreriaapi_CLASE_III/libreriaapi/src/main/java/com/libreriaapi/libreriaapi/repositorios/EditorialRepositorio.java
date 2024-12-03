@@ -16,10 +16,10 @@ public interface EditorialRepositorio extends JpaRepository<Editorial, Integer> 
     Editorial buscarPorNombreEditorial(@Param("nombre") String nombre);
     @Query("SELECT e FROM Editorial e WHERE e.idEditorial = :id")
     Editorial buscarPorIdEditorial(@Param("id") Integer id);
-    @Query("SELECT new com.libreriaapi.libreriaapi.modelos.editorial.EditorialListActivosDTO(e.nombreEditorial, e.editorialActiva) " +
+    @Query("SELECT new com.libreriaapi.libreriaapi.modelos.editorial.EditorialListActivosDTO(e.idEditorial, e.nombreEditorial, e.editorialActiva) " +
             "FROM Editorial e WHERE e.editorialActiva = true")
     List<EditorialListActivosDTO> listarActivos();
-    @Query("SELECT new com.libreriaapi.libreriaapi.modelos.editorial.EditorialListDTO(e.nombreEditorial, e.editorialActiva) " +
+    @Query("SELECT new com.libreriaapi.libreriaapi.modelos.editorial.EditorialListDTO(e.idEditorial, e.nombreEditorial, e.editorialActiva) " +
             "FROM Editorial e")
     List<EditorialListDTO> listar();
 }

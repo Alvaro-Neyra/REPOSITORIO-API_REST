@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialCreateDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialDeleteDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialListActivosDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialListDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialPatchDTO;
@@ -78,6 +79,12 @@ public class EditorialServicios {
     @Transactional
     public void darBajaEditorial(EditorialDarBajaDTO editorialDTO) throws Exception {
         Editorial editorial = obtenerEditorialPorId(editorialDTO.getIdEditorial());
+        if (editorial == null) {
+            throw new Exception("No se encontro la editorial");
+        }
+        else if (!editorial.getNombreEditorial().equals(editorialDTO.getNombreEditorial())) {
+            throw new Exception("El nombre de la editorial no coincide con el ID proporcionado.");
+        }
         editorial.setEditorialActiva(false);
         editorialRepositorio.save(editorial);
     }
@@ -86,6 +93,9 @@ public class EditorialServicios {
     public void darBajaEditorialPorNombre(String nombre) throws Exception {
         Editorial editorial = editorialRepositorio.buscarPorNombreEditorial(nombre);
         if (editorial != null) {
+            if (!editorial.getNombreEditorial().equals(nombre)) {
+                throw new Exception("El nombre de la editorial no coincide con el ID proporcionado.");
+            }
             editorial.setEditorialActiva(false);
             editorialRepositorio.save(editorial);
         } else {
@@ -156,5 +166,17 @@ public class EditorialServicios {
         editorial.setNombreEditorial(editorialDTO.getNombreEditorial());
         editorial.setEditorialActiva(editorialDTO.getEditorialActiva());
         editorialRepositorio.save(editorial);
+    }
+
+    @Transactional
+    public void eliminarEditorial(Integer id) throws Exception {
+        Editorial editorial = obtenerEditorialPorId(id);
+        editorialRepositorio.delete(editorial);
+    }
+
+    @Transactional
+    public void eliminarEditorial(EditorialDeleteDTO editorialDTO) throws Exception {
+        Editorial editorial = obtenerEditorialPorId(editorialDTO.getIdEditorial());
+        editorialRepositorio.delete(editorial);
     }
 }

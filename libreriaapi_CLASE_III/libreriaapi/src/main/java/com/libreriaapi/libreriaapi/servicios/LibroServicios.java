@@ -10,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.libreriaapi.libreriaapi.entidades.Autor;
 import com.libreriaapi.libreriaapi.entidades.Editorial;
 import com.libreriaapi.libreriaapi.entidades.Libro;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialUpdateDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroCreateDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibroDeleteDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroListActivosDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroListDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroPatchDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroUpdateDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibrosPorAutorDTO;
+import com.libreriaapi.libreriaapi.modelos.libro.LibrosPorEditorialDTO;
 import com.libreriaapi.libreriaapi.repositorios.LibroRepositorio;
 
 @Service
@@ -89,6 +93,21 @@ public class LibroServicios {
     @Transactional(readOnly = true)
     public List<LibroListActivosDTO> listarLibrosActivos() {
         return libroRepositorio.listarActivos();
+    }
+
+    @Transactional(readOnly = true)
+    public List<LibrosPorAutorDTO> listarLibrosPorAutor(String idAutor) {
+        return libroRepositorio.listarPorAutor(idAutor);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LibrosPorEditorialDTO> listarLibrosPorEditorial(Integer idEditorial) {
+        return libroRepositorio.listarPorEditorial(idEditorial);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LibrosPorAutorDTO> listarLibrosPorEditorialYLibros(String idAutor, Integer idEditorial) {
+        return libroRepositorio.listarPorAutorYEditorial(idAutor, idEditorial);
     }
 
     @Transactional
@@ -235,5 +254,15 @@ public class LibroServicios {
         } catch (Exception e) {
             throw new Exception("Error al actualizar el libro: " + e.getMessage());
         }
+    }
+
+    @Transactional
+    public void eliminarLibro(Long id) {
+        libroRepositorio.deleteById(id);
+    }
+
+    @Transactional
+    public void eliminarLibro(LibroDeleteDTO libroDTO) {
+        libroRepositorio.deleteById(libroDTO.getIsbn());
     }
 }

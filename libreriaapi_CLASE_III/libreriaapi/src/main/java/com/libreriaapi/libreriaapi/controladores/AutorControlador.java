@@ -3,6 +3,7 @@ package com.libreriaapi.libreriaapi.controladores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.libreriaapi.libreriaapi.modelos.autor.AutorCreateDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.autor.AutorDeleteDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorPatchDTO;
 import com.libreriaapi.libreriaapi.modelos.autor.AutorUpdateDTO;
 import com.libreriaapi.libreriaapi.servicios.AutorServicios;
@@ -150,6 +152,26 @@ public class AutorControlador {
         try {
             autorServicios.actualizarAutor(autorDTO);
             return ResponseEntity.ok(autorServicios.obtenerAutorPorId(autorDTO.getIdAutor()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("eliminar")
+    public ResponseEntity<Object> eliminarAutor(@RequestParam String id) {
+        try {
+            autorServicios.eliminarAutor(id);
+            return ResponseEntity.ok("Autor eliminado correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("eliminarDTO")
+    public ResponseEntity<Object> eliminarAutor(@RequestBody AutorDeleteDTO autorDTO) {
+        try {
+            autorServicios.eliminarAutor(autorDTO);
+            return ResponseEntity.ok("Autor eliminado correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

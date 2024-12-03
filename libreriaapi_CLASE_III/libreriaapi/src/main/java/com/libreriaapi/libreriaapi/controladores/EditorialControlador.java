@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialCreateDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialDarBajaDTO;
+import com.libreriaapi.libreriaapi.modelos.editorial.EditorialDeleteDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialPatchDTO;
 import com.libreriaapi.libreriaapi.modelos.editorial.EditorialUpdateDTO;
 import com.libreriaapi.libreriaapi.servicios.EditorialServicios;
@@ -90,7 +92,7 @@ public class EditorialControlador {
             editorialServicios.darBajaEditorial(editorialDTO);
             return ResponseEntity.ok("Editorial dada de baja correctamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -152,6 +154,26 @@ public class EditorialControlador {
         try {
             editorialServicios.actualizarEditorial(editorialDTO);
             return ResponseEntity.ok("Editorial modificada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("eliminar")
+    public ResponseEntity<Object> eliminarEditorial(@RequestParam Integer id) {
+        try {
+            editorialServicios.eliminarEditorial(id);
+            return ResponseEntity.ok("Editorial eliminada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @DeleteMapping("eliminarDTO")
+    public ResponseEntity<Object> eliminarEditorial(@RequestBody EditorialDeleteDTO editorialDTO) {
+        try {
+            editorialServicios.eliminarEditorial(editorialDTO);
+            return ResponseEntity.ok("Editorial eliminada correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

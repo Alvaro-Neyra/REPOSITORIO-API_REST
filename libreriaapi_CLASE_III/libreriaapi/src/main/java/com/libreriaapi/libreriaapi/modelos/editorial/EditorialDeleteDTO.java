@@ -1,16 +1,16 @@
 package com.libreriaapi.libreriaapi.modelos.editorial;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-public class EditorialDarBajaDTO {
+public class EditorialDeleteDTO {
     private Integer idEditorial;
     private String nombreEditorial;
+    private Boolean editorialActiva;
 
-    public EditorialDarBajaDTO(Integer idEditorial, String nombreEditorial) {
+    public EditorialDeleteDTO(Integer idEditorial, String nombreEditorial, Boolean editorialActiva) {
         this.idEditorial = idEditorial;
         this.nombreEditorial = nombreEditorial;
+        this.editorialActiva = editorialActiva;
     }
 }
