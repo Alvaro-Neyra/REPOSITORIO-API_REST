@@ -19,7 +19,7 @@ Este repositorio está organizado según los módulos del curso, y cada proyecto
    - Manejo de rutas dinámicas y gestión de errores.  
 
 5. **🔗 Actividad Integradora**  
-   - Proyecto práctico que integra los conceptos aprendidos.  
+   - Proyecto práctico que integra los conceptos aprendidos (todos los metodos REST, aplicados en CLASE IV).
 
 6. **📊 Evaluación y Despedida**  
    - Repaso final y evaluación del modulo.  
