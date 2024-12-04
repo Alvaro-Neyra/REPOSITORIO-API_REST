@@ -1,5 +1,6 @@
 package com.libreriaapi.libreriaapi.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,14 +106,21 @@ public class AutorServicios {
     }
 
     @Transactional
-    public void darBajaAutorPorNombre(AutorDarBajaDTO autorDTO) throws Exception {
-        Autor autor = autorRepositorio.buscarPorNombreAutor(autorDTO.getNombreAutor());
-        if (autor != null) {
-            autor.setAutorActivo(false);
-            autorRepositorio.save(autor);
-        } else {
+    public List<AutorDarBajaDTO> darBajaAutorPorNombreDTO(String nombre) throws Exception {
+        List<Autor> autores = autorRepositorio.buscarPorNombreAutorLista(nombre);
+        if (autores == null || autores.isEmpty()) {
             throw new Exception("No se encontro el autor");
         }
+
+        List<AutorDarBajaDTO> autoresDTO = new ArrayList<>();
+        for (Autor autor : autores) {
+            autor.setAutorActivo(false);
+            autorRepositorio.save(autor);
+
+            autoresDTO.add(new AutorDarBajaDTO(autor.getIdAutor(), autor.getNombreAutor()));
+        }
+
+        return autoresDTO;
     }
 
     @Transactional

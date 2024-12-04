@@ -1,5 +1,7 @@
 package com.libreriaapi.libreriaapi.controladores;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +95,15 @@ public class LibroControlador {
         }
     }
 
+    @GetMapping("listarPorAutorYEditorial")
+    public ResponseEntity<Object> listarLibrosPorAutorYEditorial(@RequestParam String idAutor, @RequestParam Integer idEditorial) {
+        try {
+            return ResponseEntity.ok(libroServicios.listarLibrosPorEditorialYLibros(idAutor, idEditorial));
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al listar los libros por autor y editorial: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("darBaja")
     public ResponseEntity<Object> darBajaLibro(@RequestParam Long id) {
         try {
@@ -104,10 +115,10 @@ public class LibroControlador {
     }
 
     @PostMapping("darBajaDTO")
-    public ResponseEntity<Object> darBajaLibro(@RequestBody LibroDarBajaDTO libroDTO) {
+    public ResponseEntity<Object> darBajaLibroDTO(@RequestParam Long id) {
         try {
-            libroServicios.darBajaLibro(libroDTO);
-            return ResponseEntity.ok("Libro dado de baja correctamente");
+            LibroDarBajaDTO libro = libroServicios.darBajaLibroDTO(id);
+            return ResponseEntity.ok(libro);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -124,12 +135,12 @@ public class LibroControlador {
     }
 
     @PostMapping("darBajaPorTituloDTO")
-    public ResponseEntity<Object> darBajaLibroPorTitulo(@RequestBody LibroDarBajaDTO libroDTO) {
+    public ResponseEntity<Object> darBajaLibroPorTituloDTO(@RequestParam String titulo) {
         try {
-            libroServicios.darBajaLibroPorTitulo(libroDTO);
-            return ResponseEntity.ok("Libro dado de baja correctamente");
+            List<LibroDarBajaDTO> librosDTO = libroServicios.darBajaLibroPorTituloDTO(titulo);
+            return ResponseEntity.ok(librosDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al dar de baja el libro por titulo: " + e.getMessage());
         }
     }
 

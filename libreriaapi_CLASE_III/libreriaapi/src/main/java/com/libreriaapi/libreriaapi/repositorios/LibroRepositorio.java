@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+
+import com.libreriaapi.libreriaapi.modelos.libro.LibroDarBajaDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroListActivosDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibroListDTO;
 import com.libreriaapi.libreriaapi.modelos.libro.LibrosPorAutorDTO;
@@ -15,6 +17,8 @@ import com.libreriaapi.libreriaapi.entidades.Libro;
 public interface LibroRepositorio extends JpaRepository<Libro, Long> {
         @Query("SELECT l FROM Libro l WHERE l.titulo = :titulo")
         Libro buscarPorTitulo(@Param("titulo") String titulo);
+        @Query("SELECT l FROM Libro l WHERE l.titulo = :titulo")
+        List<Libro> buscarPorTituloLista(@Param("titulo") String titulo);        
         @Query("SELECT l FROM Libro l WHERE l.idLibro = :id")
         Libro buscarPorId(@Param("id") Long id);
         @Query("SELECT new com.libreriaapi.libreriaapi.modelos.libro.LibroListActivosDTO(l.idLibro, l.titulo, l.ejemplares, l.autor.idAutor, l.editorial.idEditorial, l.libroActivo) " +

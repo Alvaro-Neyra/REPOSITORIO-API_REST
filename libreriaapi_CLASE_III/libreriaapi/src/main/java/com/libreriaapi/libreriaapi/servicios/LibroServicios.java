@@ -1,5 +1,6 @@
 package com.libreriaapi.libreriaapi.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,8 +82,18 @@ public class LibroServicios {
     }
 
     @Transactional(readOnly = true)
-    public List<Libro> listarLibros() {
-        return libroRepositorio.findAll();
+    public List<LibroListDTO> listarLibros() throws Exception{
+        try {
+            return libroRepositorio.findAll().stream().map(libro -> new LibroListDTO(
+                libro.getIdLibro(),
+                libro.getTitulo(),
+                libro.getEjemplares(),
+                libro.getAutor().getIdAutor(),
+                libro.getEditorial().getIdEditorial(),
+                libro.getLibroActivo())).toList();
+        } catch (Exception e) {
+            throw new Exception("Error al obtener la lista de libros" + e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -123,31 +134,45 @@ public class LibroServicios {
     }
 
     @Transactional
-    public void darBajaLibro(LibroDarBajaDTO libroDTO) throws Exception {
-        Optional<Libro> libro = libroRepositorio.findById(libroDTO.getIsbn());
+    public LibroDarBajaDTO darBajaLibroDTO(Long isbn) throws Exception {
+        Optional<Libro> libro = libroRepositorio.findById(isbn);
         if (libro.isPresent()) {
             Libro libroBaja = libro.get();
             libroBaja.setLibroActivo(false);
             libroRepositorio.save(libroBaja);
+            return new LibroDarBajaDTO(libroBaja.getIdLibro(), libroBaja.getTitulo(), libroBaja.getEjemplares(), libroBaja.getAutor().getIdAutor(), libroBaja.getEditorial().getIdEditorial());
         } else {
             throw new Exception("No se encontro el libro");
         }
+    }
+
+    @Transactional
+    public List<LibroDarBajaDTO> darBajaLibroPorTituloDTO(String titulo) throws Exception {
+        List<Libro> libros = libroRepositorio.buscarPorTituloLista(titulo);
+        if (libros == null || libros.isEmpty()) {
+            throw new Exception("No se encontró ningún libro con el título proporcionado.");
+        }
+    
+        List<LibroDarBajaDTO> librosDTO = new ArrayList<>();
+        for (Libro libro : libros) {
+            libro.setLibroActivo(false);
+            libroRepositorio.save(libro);
+
+            librosDTO.add(new LibroDarBajaDTO(
+                libro.getIdLibro(),
+                libro.getTitulo(),
+                libro.getEjemplares(),
+                libro.getAutor().getIdAutor(),
+                libro.getEditorial().getIdEditorial()
+            ));
+        }
+    
+        return librosDTO;
     }
 
     @Transactional
     public void darBajaLibroPorTitulo(String titulo) throws Exception {
         Libro libro = libroRepositorio.buscarPorTitulo(titulo);
-        if (libro != null) {
-            libro.setLibroActivo(false);
-            libroRepositorio.save(libro);
-        } else {
-            throw new Exception("No se encontro el libro");
-        }
-    }
-
-    @Transactional
-    public void darBajaLibroPorTitulo(LibroDarBajaDTO libroDTO) throws Exception {
-        Libro libro = libroRepositorio.buscarPorTitulo(libroDTO.getTitulo());
         if (libro != null) {
             libro.setLibroActivo(false);
             libroRepositorio.save(libro);
